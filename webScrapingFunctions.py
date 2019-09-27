@@ -2,9 +2,11 @@ import requests as rq
 from bs4 import BeautifulSoup as bs
 def table_scrape(website, debug):
     if debug == False:
+        #makes an  html request to the given site
         r = rq.get(website, verify=False)
         html_doc = r.content
     else: 
+        #sample html file used to limit html requests to imdb when debugging
         html_doc = """
         <table class="cast_list">
   <tbody><tr><td colspan="4" class="castlist_label"></td></tr>
@@ -125,7 +127,7 @@ def table_scrape(website, debug):
             <a href="/title/tt4154756/characters/nm4043618?ref_=ttfc_fc_cl_t8">Spider-Man</a> 
                   
           </td>
-      </tr>
+      </tr>https://www.imdb.com/title/tt0073195/?ref_=fn_al_tt_1
       <tr class="odd">
           <td class="primary_photo">
 <a href="/name/nm1569276/?ref_=ttfc_fc_cl_i9"><img height="44" width="32" alt="Chadwick Boseman" title="Chadwick Boseman" src="https://m.media-amazon.com/images/M/MV5BMTk2OTY5MzcwMV5BMl5BanBnXkFtZTgwODM4MDI5MjI@._V1_UX32_CR0,0,32,44_AL_.jpg" class="loadlate"></a>          </td>
@@ -1933,7 +1935,7 @@ def table_scrape(website, debug):
               ...
           </td>
           <td class="character">
-            Washington Square Park Waitress 
+            Washington Square Park Waitress https://www.imdb.com/title/tt0073195/?ref_=fn_al_tt_1
   
   
   (uncredited)
@@ -1981,17 +1983,17 @@ def table_scrape(website, debug):
     soup = bs(html_doc, 'html.parser')
     actor_table = soup.find_all('td', class_ = 'primary_photo' )
     actors = []
-    print(bs.get_text(actor_table[0].findNextSibling('td')))
+    #print(bs.get_text(actor_table[0].findNextSibling('td')))
     #adds every actor to a list
     for i in range(len(actor_table)):
         actors.append(bs.get_text(actor_table[i].findNextSibling('td')))
     #removes whitespace characters
     for i in range(len(actors)):
         actors[i] = actors[i].strip()
-    print(actors)    
+    #print(actors)    
     return actors
                    
         
         
-if ___name___ = "___main___":
-    table_scrape("https://www.imdb.com/title/tt7349950/?ref_=nv_sr_1?ref_=nv_sr_1", False)
+if __name__ == "__main__":
+    print(table_scrape("https://www.imdb.com/title/tt7349950/?ref_=nv_sr_1?ref_=nv_sr_1", False))
