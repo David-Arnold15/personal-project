@@ -15,7 +15,7 @@ def table_scrape(website, debug):
     #adds every actor to a list
     for i in range(len(actor_table)):
         #follow a link off of the primary photo and get the images from it
-        link = actor_table[i].findParent('a')
+        link = actor_table[i].parent
         print(link)
         actors.append(bs.get_text(actor_table[i].findNextSibling('td')))
     #removes whitespace characters
