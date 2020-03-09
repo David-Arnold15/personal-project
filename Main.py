@@ -50,13 +50,13 @@ class Movies(object):
         
     def scraper(self, website):
         actors_characters = self.imdb_scrape(website)
-        self.actors = actors_characters[0]
-        print(len(self.actors)/5)
+        actors = actors_characters[0]
         characters = actors_characters[1]
-        
+        actor_msg = ""
         for i in range(len(characters)):
-            self.actor_dict[self.actors[i]] = characters[i]     
-        
+            actor_msg += actors[i] + " "
+            self.actor_dict[actors[i]] = characters[i]     
+        return actor_msg
     def imdb_scrape(self, website):
         #makes an  html request to the given site
         r = rq.get(website, verify=False)
@@ -103,16 +103,9 @@ class Movie_frame(tk.Frame):
     def quit(self):
         root.destroy()
     def raise_temp(self):
-        
-        #function variables
-        actor_character = movies.scraper(self.ent_link.get())
-        actor_dict = {}
-        actor_msg = ""
-        
-        for i in range(len(actor_character[0])):
-            actor_msg += actor_character[0][i] + " "
-            actor_dict[actor_character[0][i]] = actor_character[1][i]
-        frame_temp.scr_actor_list.insert("0.0", )        
+        actor_msg = movies.scraper(self.ent_link.get())
+    
+        frame_temp.scr_actor_list.insert("0.0", actor_msg )        
         frame_temp.tkraise()
     def raise_recognize(self):
         frame_recognize.tkraise() 
