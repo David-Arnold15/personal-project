@@ -1,20 +1,29 @@
 #used to take a screenshot
 import pyautogui 
+
 #file management
 import os
+
 #used to recognize faces
 import face_recognition
+
 #builds the GUI
 import tkinter as tk
+
 #used to process the HTML file
 from bs4 import BeautifulSoup as bs
+
 #requests the HTMl file from a website
 import requests as rq
+
 #used to store variables as a data file
 import pickle
+
+#creates a scrolled text box 
+from tkinter import scrolledtext as scr
+
 #GLobal Variables
 actor_success = ""
-movie  = "Avengers_Infinity_War"
 DEFAULT = ("Times New Roman", 18)
 
 
@@ -89,16 +98,26 @@ class Movie_frame(tk.Frame):
                                               row="2", column="0")    
         
         self.btn_submit = tk.Button(self, text = "Submit", bg="green",
-                              command = self.raise_movie_name_frame, font=DEFAULT).grid(
+                              command = self.raise_temp, font=DEFAULT).grid(
                                               row="2", column="1" )        
     def quit(self):
         root.destroy()
-    def raise_movie_name_frame(self):
-        movies.scraper(self.ent_link.get())
-        frame_movie_name.tkraise()
+    def raise_temp(self):
+        
+        #function variables
+        actor_character = movies.scraper(self.ent_link.get())
+        actor_dict = {}
+        actor_msg = ""
+        
+        for i in range(len(actor_character[0])):
+            actor_msg += actor_character[0][i] + " "
+            actor_dict[actor_character[0][i]] = actor_character[1][i]
+        frame_temp.scr_actor_list.insert("0.0", )        
+        frame_temp.tkraise()
     def raise_recognize(self):
         frame_recognize.tkraise() 
     
+        popup.geometry("100x100")
        
     
 
@@ -195,6 +214,7 @@ class Movie_name_frame(tk.Frame):
         if movie in movies.movie_dict.keys():
             frame_recognize.tkraise()
         else:
+            os.mkdir("./movies/" + movies.movie_name)
             frame_movie.tkraise()
             
     def raise_temp(self):
@@ -221,25 +241,16 @@ class Temp_frame(tk.Frame):
         self.lbl_instructions2.grid(row="1", column="0" , columnspan = "2")    
         
         #labels holding the names of the actors
-        self.lbl_actors1 = tk.Label(self, font = DEFAULT, 
-                                         text = "")
-        self.lbl_actors1.grid(row="2", column="0" , columnspan = "2")
-       
-        self.lbl_actors2 = tk.Label(self, font = DEFAULT, 
-                                         text = "")
-        self.lbl_actors2.grid(row="3", column="0" , columnspan = "2")
-       
-        self.lbl_actors3 = tk.Label(self, font = DEFAULT, 
-                                         text = "")
-        self.lbl_actors3.grid(row="4", column="0" , columnspan = "2")        
+        self.scr_actor_list = scr.ScrolledText(self, height="8",width="60",)
+        self.scr_actor_list.grid(row = 2, column = 0, columnspan = 2)
         
         #these are the buttons to cancel or submit
         self.btn_cancel = tk.Button(self, text = "Cancel", bg="Red",
                               command = self.test, font=DEFAULT).grid(
-                                              row="5", column="0") 
+                                              row="3", column="0") 
         self.btn_submit = tk.Button(self, text = "Submit", bg="green",
                               command = self.raise_recognize, font=DEFAULT).grid(
-                                              row="5", column="1")        
+                                              row="3", column="1")        
     def test(self):
         pass
 
