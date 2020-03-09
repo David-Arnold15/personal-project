@@ -23,6 +23,9 @@ actors off of IMDB"""
 #Data classes
 class Movies(object):
     def __init__(self):
+        self.actor_dict = {}
+        self.actors = []
+        self.movie_name = "Avengers_Infinity_War"
         #temporary dictionary. Final version will use pickle to pull full list
         try:
             self.pickled_dict = open("movie_dict.p", "rb")
@@ -35,8 +38,7 @@ class Movies(object):
             pickle.dump(self.movie_dict, self.pickled_dict)
             self.pickled_dict.close()
             print("option 2")
-        self.actor_dict = {}
-        self.actors = []
+        
     def scraper(self, website):
         actors_characters = self.imdb_scrape(website)
         self.actors = actors_characters[0]
@@ -142,7 +144,7 @@ class Recognize_frame(tk.Frame):
     
     def recognize(self, movie):
         actor_success= []
-        files = os.listdir("movies/" + movie)
+        files = os.listdir("movies/" + movies.movie_name)
         unknown_image = face_recognition.load_image_file("face.jpg")
         unknown_encoding = face_recognition.face_encodings(unknown_image)
         reference = ""
@@ -150,7 +152,7 @@ class Recognize_frame(tk.Frame):
         results = ""
         
         for file in files:
-            reference = face_recognition.load_image_file("movies/" + movie + "/" +file)
+            reference = face_recognition.load_image_file("movies/" + movies.movie_name + "/" +file)
             reference_encoding = face_recognition.face_encodings(reference)[0]
             
             for face_encoding in unknown_encoding:
@@ -178,17 +180,23 @@ class Movie_name_frame(tk.Frame):
         self.lbl_instructions.grid(row="0", column="0" , columnspan = "2")
         
         #field for the user to enter in the name of the movie
-        self.ent_link = tk.Entry(self, font = DEFAULT,)
-        self.ent_link.grid(row="1", column="0" , columnspan = "2")
+        self.ent_title = tk.Entry(self, font = DEFAULT,)
+        self.ent_title.grid(row="1", column="0" , columnspan = "2")
         
         self.btn_cancel = tk.Button(self, text = "Cancel", bg="Red",
                               command = self.raise_movie_frame, font=DEFAULT).grid(
                                               row="2", column="0")
         self.btn_submit = tk.Button(self, text = "Submit", bg="green",
-                              command = self.raise_temp, font=DEFAULT).grid(
+                              command = self.raise_movie_frame, font=DEFAULT).grid(
                                               row="2", column="1")
     def raise_movie_frame(self):
-        frame_movie.tkraise()        
+        movie = self.ent_title.get()
+        movies.movie_name = movie
+        if movie in movies.movie_dict.keys():
+            frame_recognize.tkraise()
+        else:
+            frame_movie.tkraise()
+            
     def raise_temp(self):
         #print(actors)
         #print(characters)
@@ -268,5 +276,5 @@ frame_temp = Temp_frame()
 frame_temp.grid(row="0", column="0", sticky="news")
 
 #creating the mainloop
-frame_movie.tkraise()
-root.mainloop()
+frame_movie_name.tkraise()
+root.mainloop()     
