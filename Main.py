@@ -30,6 +30,7 @@ DEFAULT = ("Times New Roman", 18)
 """this program allows the user to recognize famous faces in movies, with the names of the characters they play by pulling a list of
 actors off of IMDB"""
 #Data classes
+
 class Movies(object):
     def __init__(self):
         self.actor_dict = {}
@@ -65,10 +66,11 @@ class Movies(object):
         actor_table = soup.find_all('td', class_ = 'primary_photo' )
         actors = []
         characters = []
-        #print(bs.get_text(actor_table[0].findNextSibling('td')))
+        print(bs.get_text(actor_table[0].findNextSibling('td')))
         
         #adds every actor to a list
         for i in range(len(actor_table)):
+            #print(bs.get_text(actor_table[0].findNextSibling('td'))
             actors.append(bs.get_text(actor_table[i].findNextSibling('td')))
             characters.append(bs.get_text(actor_table[i].findNextSibling('td').findNextSibling('td').findNextSibling('td')))
         
@@ -78,11 +80,15 @@ class Movies(object):
             characters[i] = characters[i].strip()
             #character_remove_whitespace = characters[i].split("/n")
             #characters[i] = character_remove_whitespace[0]
-        return [actors , characters]    
+        return [actors , characters]
+    
+
 """--------------------------------------------------------------------------------------------------------------------------------------"""
 #Frame Classes
 class Movie_frame(tk.Frame):
     def __init__(self):
+        
+        #TODO: place the movies in a list of subframes with the name of the movie and a button to click
         tk.Frame.__init__(self)
         self.lbl_instructions = tk.Label(self, font = DEFAULT, 
                                           text = "Enter the IMDB link for the movie you would like to watch").grid(
@@ -142,7 +148,7 @@ class Recognize_frame(tk.Frame):
         people = ""
         im1 = pyautogui.screenshot('face.jpg')
         print('calling recognize')
-        recognized = self.recognize(movie)
+        recognized = self.recognize(movies.movie_name)
         
         for i in range(len(recognized)):
             people += recognized[i]
@@ -180,27 +186,62 @@ class Recognize_frame(tk.Frame):
         movies_file.close()
         root.destroy()    
 
+class MovieNameSubFrame(tk.Frame):
+    def __init__(self, parent, movie_name):
+    
+        self.movie_name = movie_name
+        tk.Frame.__init__(self, master = parent,)
+        
+        self.btn_movie_name = tk.Button(self, text=movie_name, command = self.go_recognize, )
+        self.btn_movie_name.grid(row = 0, column = 0)
+    def go_recognize(self):
+        movies.movie_name = self.movie_name
+        frame_recognize.tkraise()
 
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class Movie_name_frame(tk.Frame):
     def __init__(self):
         tk.Frame.__init__(self)
         
+        
         #tells the user what to do
         self.lbl_instructions = tk.Label(self, font = DEFAULT, 
                                          text = "What is the name of the movie you would like to watch? Please exclude special characters")
         self.lbl_instructions.grid(row="0", column="0" , columnspan = "2")
+
+        #initializes the subframes with the names of the movies in them
+        rows = 1
+        columns = 0
+        self.frames_list = []
+        self.keys_iterable =  list(movies.movie_dict.keys())
+
+        print(self.keys_iterable)
+        
+        for i in range(len(self.keys_iterable)):
+
+            self.frames_list.append(MovieNameSubFrame(self, self.keys_iterable[i]))
+            self.frames_list[i].grid(row = rows, column = columns)
+
+            columns += 1
+            if columns > 2:
+                rows += 1
+                columns = 0
         
         #field for the user to enter in the name of the movie
+
+        rows += 1
+
         self.ent_title = tk.Entry(self, font = DEFAULT,)
-        self.ent_title.grid(row="1", column="0" , columnspan = "2")
+        self.ent_title.grid(row=rows, column="0" , columnspan = "2")
+
+        rows += 1
         
         self.btn_cancel = tk.Button(self, text = "Cancel", bg="Red",
                               command = self.raise_movie_frame, font=DEFAULT).grid(
-                                              row="2", column="0")
+                                              row=rows , column="0")
         self.btn_submit = tk.Button(self, text = "Submit", bg="green",
                               command = self.raise_movie_frame, font=DEFAULT).grid(
-                                              row="2", column="1")
+                                              row=rows, column="2")
     def raise_movie_frame(self):
         movie = self.ent_title.get()
         movies.movie_name = movie
