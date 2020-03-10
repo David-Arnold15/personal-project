@@ -50,13 +50,22 @@ class Movies(object):
             print("option 2")
         
     def scraper(self, website):
+
         actors_characters = self.imdb_scrape(website)
         actors = actors_characters[0]
         characters = actors_characters[1]
         actor_msg = ""
+
         for i in range(len(characters)):
             actor_msg += actors[i] + " "
-            self.actor_dict[actors[i]] = characters[i]     
+            self.actor_dict[actors[i]] = characters[i]
+            
+        movies.movie_dict[movies.movie_name] = self.actor_dict
+
+        self.pickled_dict = open("movie_dict.p", "wb")
+        pickle.dump(self.movie_dict, self.pickled_dict)
+        self.pickled_dict.close()
+        
         return actor_msg
     def imdb_scrape(self, website):
         #makes an  html request to the given site
