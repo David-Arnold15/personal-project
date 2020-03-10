@@ -101,11 +101,11 @@ class Movie_frame(tk.Frame):
         tk.Frame.__init__(self)
         self.lbl_instructions = tk.Label(self, font = DEFAULT, 
                                           text = "Enter the IMDB link for the movie you would like to watch").grid(
-                                              row="0", column="0" , columnspan = "2")
+                                              row="0", column="0" , columnspan = "3")
         
         #This is where the user enters a link to the movie they wish to watch
         self.ent_link = tk.Entry(self, font = DEFAULT,)
-        self.ent_link.grid(row="1", column="0" , columnspan = "2")
+        self.ent_link.grid(row="1", column="0" , columnspan = "3")
         
         #the buttons that quit or submit
         self.btn_quit = tk.Button(self, text = "quit", bg="red",
@@ -114,7 +114,7 @@ class Movie_frame(tk.Frame):
         
         self.btn_submit = tk.Button(self, text = "Submit", bg="green",
                               command = self.raise_temp, font=DEFAULT).grid(
-                                              row="2", column="1" )        
+                                              row="2", column="2" )        
     def quit(self):
         root.destroy()
     def raise_temp(self):
@@ -331,4 +331,5 @@ frame_temp.grid(row="0", column="0", sticky="news")
 
 #creating the mainloop
 frame_movie_name.tkraise()
+root.geometry("500x500")
 root.mainloop()     
